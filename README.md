@@ -5,3 +5,6 @@ My implementations of the data structures described in *Data Structures and Algo
 
 ### Stack
 A stack supports push(item), pop(), top(), is_empty() and len() member functions. It's implemented as a Python array.
+
+### Queue
+A queue supports similar a similar interface to a stack, except that the pop() and top() are replaced by dequeue() and first(), which simply refer to the first element of the queue. The queue is implemented similarly to the stack, except that dequeue() calls replace the returned element with None and the class keeps track of the index of the first item of the dequeue.
