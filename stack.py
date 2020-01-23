@@ -21,3 +21,6 @@ class Stack:
 
     def is_empty(self):
         return self.len == 0
+
+    def __len__(self):
+        return self.len
