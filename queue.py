@@ -94,6 +94,10 @@ class CircularQueueTest(unittest.TestCase):
         self.assertEqual(queue.first(), 1)
 
     def test_wraparound(self):
+        """
+        Tests that adding extra elements will cause the queue to wraparound the array
+        :return:
+        """
         queue = CircularQueue(10)
         for i in range(10):
             queue.enqueue(i)
@@ -107,6 +111,18 @@ class CircularQueueTest(unittest.TestCase):
         queue.dequeue()
         self.assertEqual(queue.zero_index, 0)
         self.assertEqual(queue.first(), 11)
+
+    def test_resize(self):
+        queue = CircularQueue(5)
+        queue.enqueue(1)
+        queue.enqueue(1)
+        queue.dequeue()
+        self.assertEqual(queue.zero_index, 1)
+        self.assertEqual(len(queue), 1)
+        queue.resize(10)
+        self.assertEqual(len(queue._queue), 10)
+        self.assertEqual(queue.zero_index, 0)
+        self.assertEqual(len(queue), 1)
 
 
 if __name__ == "__main__":
