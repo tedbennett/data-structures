@@ -38,6 +38,15 @@ class Deque(CircularQueue):
             raise Exception("Deque is empty")
         return self._queue[self.zero_index + self.len - 1]
 
+    def resize(self, length):
+        super().resize(length)
+
+    def is_empty(self):
+        return super().is_empty()
+
+    def __len__(self):
+        return super().__len__()
+
 
 class DequeTest(unittest.TestCase):
     def test_init(self):
@@ -91,6 +100,22 @@ class DequeTest(unittest.TestCase):
         queue.remove_first()
         self.assertEqual(queue.zero_index, 0)
         self.assertEqual(queue.first(), 11)
+
+    def test_resize(self):
+        queue = Deque(5)
+        for i in range(5):
+            queue.add_last(i)
+        queue.remove_first()
+        self.assertEqual(queue.zero_index, 1)
+        self.assertEqual(len(queue), 4)
+        queue.resize(10)
+        self.assertEqual(len(queue._queue), 10)
+        self.assertEqual(queue.zero_index, 0)
+        self.assertEqual(len(queue), 4)
+        for i in range(4):
+            queue.enqueue(i)
+        with self.assertRaises(Exception):
+            queue.resize(3)
 
 
 if __name__ == "__main__":
