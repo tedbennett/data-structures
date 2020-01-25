@@ -24,7 +24,7 @@ class Deque(CircularQueue):
     def remove_last(self):
         if self.len == 0:
             raise Exception("Dequeue is empty")
-        index = (self.zero_index + self.len - 1) % self.max_size  # finds end of queue, checks if needs to wrap around        print(self.zero_index)
+        index = (self.zero_index + self.len - 1) % self.max_size  # finds end of queue, checks if needs to wrap around
         item = self._queue[index]
         self._queue[index] = None
         self.len -= 1
@@ -72,6 +72,25 @@ class DequeTest(unittest.TestCase):
         self.assertEqual(queue.first(), 1)
         self.assertEqual(queue.remove_last(), 9)
         self.assertEqual(queue.last(), 8)
+
+    def test_wraparound(self):
+        """
+        Tests that adding extra elements will cause the deque to wraparound the array
+        :return:
+        """
+        queue = Deque(10)
+        for i in range(10):
+            queue.add_last(i)
+        self.assertEqual(queue.zero_index, 0)
+        queue.remove_first()
+        self.assertEqual(queue.zero_index, 1)
+        queue.add_last(11)  # should be at array index 0
+        for i in range(8):
+            queue.remove_first()
+        self.assertEqual(queue.zero_index, 9)
+        queue.remove_first()
+        self.assertEqual(queue.zero_index, 0)
+        self.assertEqual(queue.first(), 11)
 
 
 if __name__ == "__main__":
