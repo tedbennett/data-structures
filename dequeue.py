@@ -18,13 +18,25 @@ class Deque(CircularQueue):
     def add_last(self, item):
         super().enqueue(item)
 
+    def remove_first(self):
+        return super().dequeue()
+
+    def remove_last(self):
+        if self.len == 0:
+            raise Exception("Dequeue is empty")
+        index = (self.zero_index + self.len - 1) % self.max_size  # finds end of queue, checks if needs to wrap around        print(self.zero_index)
+        item = self._queue[index]
+        self._queue[index] = None
+        self.len -= 1
+        return item
+
     def first(self):
-        super().first()
+        return super().first()
 
     def last(self):
         if self.len == 0:
             raise Exception("Deque is empty")
-        return self._queue[self.zero_index + self.len]
+        return self._queue[self.zero_index + self.len - 1]
 
 
 class DequeTest(unittest.TestCase):
@@ -49,6 +61,17 @@ class DequeTest(unittest.TestCase):
             queue.add_first(i)
         with self.assertRaises(Exception):
             queue.add_last(1)
+
+    def test_remove(self):
+        queue = Deque(20)
+        for i in range(10):
+            queue.add_last(i)
+        self.assertEqual(len(queue), 10)
+        self.assertEqual(queue.remove_first(), 0)
+        self.assertEqual(len(queue), 9)
+        self.assertEqual(queue.first(), 1)
+        self.assertEqual(queue.remove_last(), 9)
+        self.assertEqual(queue.last(), 8)
 
 
 if __name__ == "__main__":
