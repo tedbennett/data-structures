@@ -93,6 +93,21 @@ class CircularQueueTest(unittest.TestCase):
         self.assertEqual(len(queue), 9)
         self.assertEqual(queue.first(), 1)
 
+    def test_wraparound(self):
+        queue = CircularQueue(10)
+        for i in range(10):
+            queue.enqueue(i)
+        self.assertEqual(queue.zero_index, 0)
+        queue.dequeue()
+        self.assertEqual(queue.zero_index, 1)
+        queue.enqueue(11)  # should be at array index 0
+        for i in range(8):
+            queue.dequeue()
+        self.assertEqual(queue.zero_index, 9)
+        queue.dequeue()
+        self.assertEqual(queue.zero_index, 0)
+        self.assertEqual(queue.first(), 11)
+
 
 if __name__ == "__main__":
     unittest.main()
