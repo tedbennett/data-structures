@@ -1,3 +1,6 @@
+import unittest
+
+
 class QueueBase:
     def __init__(self):
         self._queue = []
@@ -61,3 +64,35 @@ class CircularQueue(QueueBase):
         return super().__len__()
 
 
+class CircularQueueTest(unittest.TestCase):
+    def test_init(self):
+        """
+        Tests queue initialises correctly, and checks first() raises and exception correctly
+        :return:
+        """
+        queue = CircularQueue(20)
+        self.assertEqual(queue.len, 0)
+        self.assertEqual(len(queue._queue), 20)
+        with self.assertRaises(Exception):
+            queue.first()
+
+    def test_enqueue(self):
+        queue = CircularQueue(20)
+        queue.enqueue("first")
+        for i in range(19):
+            queue.enqueue(i)
+        with self.assertRaises(Exception):
+            queue.enqueue(1)
+
+    def test_dequeue(self):
+        queue = CircularQueue(20)
+        for i in range(10):
+            queue.enqueue(i)
+        self.assertEqual(len(queue), 10)
+        self.assertEqual(queue.dequeue(), 0)
+        self.assertEqual(len(queue), 9)
+        self.assertEqual(queue.first(), 1)
+
+
+if __name__ == "__main__":
+    unittest.main()
