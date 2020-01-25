@@ -54,6 +54,16 @@ class CircularQueue(QueueBase):
         self.zero_index = (self.zero_index + 1) % self.max_size
         return item
 
+    def resize(self, length):
+        if length < self.len:
+            raise Exception("New length is shorter than queue")
+        new_queue = [None] * length
+        for idx in range(self.len):
+            new_queue[idx] = self._queue[(self.zero_index+idx) % self.max_size]
+        self.zero_index = 0
+        self.max_size = length
+        self._queue = new_queue
+
     def first(self):
         return super().first()
 
@@ -114,15 +124,20 @@ class CircularQueueTest(unittest.TestCase):
 
     def test_resize(self):
         queue = CircularQueue(5)
-        queue.enqueue(1)
-        queue.enqueue(1)
+        for i in range(5):
+            queue.enqueue(i)
         queue.dequeue()
         self.assertEqual(queue.zero_index, 1)
-        self.assertEqual(len(queue), 1)
+        self.assertEqual(len(queue), 4)
         queue.resize(10)
+        print(queue._queue)
         self.assertEqual(len(queue._queue), 10)
         self.assertEqual(queue.zero_index, 0)
-        self.assertEqual(len(queue), 1)
+        self.assertEqual(len(queue), 4)
+        for i in range(4):
+            queue.enqueue(i)
+        with self.assertRaises(Exception):
+            queue.resize(3)
 
 
 if __name__ == "__main__":
