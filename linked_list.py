@@ -2,8 +2,8 @@ import unittest
 
 
 class Node:
-    def __init__(self, data=None):
-        self._node = None
+    def __init__(self, data=None, next=None):
+        self._node = next
         self._data = data
 
     def get_data(self):
@@ -23,6 +23,11 @@ class NodeTest(unittest.TestCase):
         node.set_data("hello")
         self.assertEqual(node.get_data(), "hello")  # check set data
         self.assertEqual(node.next(), None)
+
+    def test_list(self):
+        node1 = Node("1")
+        node2 = Node("2", node1)  # create list of 2 nodes, node2 pointing to node1
+        self.assertEqual(node2.next(), node1)
 
 
 if __name__ == "__main__":
