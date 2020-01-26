@@ -45,6 +45,9 @@ class LinkedListBase:
     def is_empty(self):
         return self.len == 0
 
+    def __len__(self):
+        return self.len
+
 
 class ListTest(unittest.TestCase):
     def test_list(self):
@@ -73,6 +76,12 @@ class LinkedStack(LinkedListBase):
 
     def pop(self):
         return super().remove_first()
+
+    def top(self):
+        return self.first.data
+
+    def __len__(self):
+        return super().__len__()
 
 
 class LinkedStackTest(unittest.TestCase):
