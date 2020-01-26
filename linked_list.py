@@ -4,8 +4,8 @@ import unittest
 class LinkedList:
     class Node:
         def __init__(self, data=None, next=None):
-            self._next = next
-            self._data = data
+            self.next = next
+            self.data = data
 
     def __init__(self):
         self.first = None
@@ -17,7 +17,7 @@ class LinkedList:
         if self.len == 0:
             self.last = new_first
         else:
-            new_first._next = self.first
+            new_first.next = self.first
         self.first = new_first
         self.len += 1
 
@@ -26,9 +26,21 @@ class LinkedList:
         if self.len == 0:
             self.first = new_last
         else:
-            self.last._next = new_last
+            self.last.next = new_last
         self.last = new_last
         self.len += 1
+
+    def remove_first(self):
+        if self.len == 0:
+            raise IndexError
+        new_first = self.first.next
+        old_first = self.first
+
+        self.first = new_first
+        self.len -= 1
+        if self.len == 0:
+            self.last = None
+        return old_first.data
 
 
 class ListTest(unittest.TestCase):
@@ -43,11 +55,11 @@ class ListTest(unittest.TestCase):
         linked.add_first("3")
         item = linked.first
         for i in range(linked.len):
-            print(item._data)
-            item = item._next
-        self.assertEqual(linked.remove_first(), "2")
+            print(item.data)
+            item = item.next
         self.assertEqual(linked.remove_first(), "3")
         self.assertEqual(linked.remove_first(), "1")
+        self.assertEqual(linked.remove_first(), "2")
         with self.assertRaises(IndexError):
             linked.remove_first()
 
