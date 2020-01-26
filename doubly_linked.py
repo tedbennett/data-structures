@@ -99,6 +99,60 @@ class DoublyLinkedTest(unittest.TestCase):
             double_list.remove(double_list.header, double_list.trailer)
 
 
+class PositionalList(DoublyLinkedList):
+    def __init__(self):
+        super().__init__()
+
+    class Position:
+        def __init__(self, node, container):
+            self.node = node
+            self.container = container
+
+        def element(self):
+            return self.node.data
+
+    def check_position(self, p):
+        """
+        Positions won't necessarily refer to this particular container so must be validated
+        :return:
+        """
+        if p.container is not self:
+            raise ValueError
+        if not isinstance(p, self.Position):
+            raise TypeError
+        return p.node
+
+    def position(self, node):
+        return self.Position(node, self)
+
+    def insert_between(self, begin, end, data):
+        begin_node = self.check_position(begin)
+        end_node = self.check_position(end)
+        node = super().insert(begin_node, end_node, data)
+        return self.position(node)
+
+    def add_first(self, data):
+        self.insert(self.header, self.header.next, data)
+
+    def add_last(self, data):
+        self.insert(self.trailer.prev, self.trailer, data)
+
+    def before(self, p):
+        node = self.check_position(p)
+        return self.position(node.prev)
+
+    def after(self, p):
+        node = self.check_position(p)
+        return self.position(node.next)
+
+    def first(self):
+        return self.position(self.header.next)
+
+    def last(self):
+        return self.position(self.trailer.prev)
+
+
+
 class PositionalTest(unittest.TestCase):
     def test_access(self):
         """
@@ -109,10 +163,10 @@ class PositionalTest(unittest.TestCase):
         for i in range(5):
             position_list.add_last(i)
         p = position_list.first()
-        self.assertEqual(p.element().data, 0)
+        self.assertEqual(p.element(), 0)
         for i in range(1, 5):
             p = position_list.after(p)
-            self.assertEqual(p.element().data, i)
+            self.assertEqual(p.element(), i)
 
 
 
