@@ -24,3 +24,7 @@ A double-ended queue allows for adding and removing elements from both ends of t
 expanded circular queue.
 
 ### Linked Lists
+
+#### Singly-Linked Lists
+A linked list comprises nodes, which point to the data they contain, and the next node
+in the container. 
