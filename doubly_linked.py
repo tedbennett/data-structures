@@ -52,6 +52,10 @@ class DoublyLinkedList(LinkedListBase):
 
 class DoublyLinkedTest(unittest.TestCase):
     def test_double(self):
+        """
+        Test to check items are correctly inserted into the DL list.
+        :return:
+        """
         double_list = DoublyLinkedList()
         node1 = double_list.insert(double_list.header, double_list.trailer, "1")
         self.assertEqual(len(double_list), 1)
@@ -70,6 +74,21 @@ class DoublyLinkedTest(unittest.TestCase):
         self.assertEqual(double_list.remove(double_list.header, node2).data, "1")
         self.assertEqual(len(double_list), 1)
         self.assertEqual(double_list.remove(double_list.header, double_list.trailer).data, "2")
+        with self.assertRaises(IndexError):
+            double_list.remove(double_list.header, double_list.trailer)
+
+    def test_clear(self):
+        """
+        Test to ensure clear() correctly clears a list
+        :return:
+        """
+        double_list = DoublyLinkedList()
+        next_node = double_list.insert(double_list.header, double_list.trailer, 0)
+        for i in range(1, 6):
+            next_node = double_list.insert(next_node, double_list.trailer, i)
+        self.assertEqual(len(double_list), 6)
+        double_list.clear()
+        self.assertEqual(double_list.is_empty(), True)
         with self.assertRaises(IndexError):
             double_list.remove(double_list.header, double_list.trailer)
 
