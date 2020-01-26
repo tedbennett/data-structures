@@ -49,6 +49,12 @@ class DoublyLinkedList(LinkedListBase):
             raise IndexError
         return self.trailer.prev
 
+    def clear(self):
+        for i in range(self.len):
+            item_to_remove = self.header.next
+            assert(item_to_remove != self.trailer)
+            self.remove(self.header, item_to_remove.next)
+
 
 class DoublyLinkedTest(unittest.TestCase):
     def test_double(self):
