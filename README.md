@@ -26,5 +26,15 @@ expanded circular queue.
 ### Linked Lists
 
 #### Singly-Linked Lists
-A linked list comprises nodes, which point to the data they contain, and the next node
-in the container. 
+A linked list comprises nodes, which refer to the data they contain, and the next node
+in the container. This is used to implement a stack and a queue.
+
+#### Doubly-Linked Lists
+These nodes also include a reference to the previous item in the list. The list is
+enclosed by 'sentinels', which are nodes that signify the ends of the list, making
+operations at the ends simpler.
+
+#### Positional List
+Implemented as a doubly-linked list, this ADT includes Position objects that refer
+to a node in the list. Adjacent positions can be accessed as well as an iterator.
+
