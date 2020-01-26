@@ -37,7 +37,9 @@ class DoublyLinkedList(LinkedListBase):
         begin.next = end
         end.prev = begin
         self.len -= 1
-        return remove_node
+        data = remove_node.data
+        remove_node.next = remove_node.prev = remove_node.data = None
+        return data
 
     def first(self):
         if self.is_empty():
@@ -77,9 +79,9 @@ class DoublyLinkedTest(unittest.TestCase):
         with self.assertRaises(IndexError):
             double_list.remove(double_list.header, double_list.trailer)
 
-        self.assertEqual(double_list.remove(double_list.header, node2).data, "1")
+        self.assertEqual(double_list.remove(double_list.header, node2), "1")
         self.assertEqual(len(double_list), 1)
-        self.assertEqual(double_list.remove(double_list.header, double_list.trailer).data, "2")
+        self.assertEqual(double_list.remove(double_list.header, double_list.trailer), "2")
         with self.assertRaises(IndexError):
             double_list.remove(double_list.header, double_list.trailer)
 
@@ -111,6 +113,12 @@ class PositionalList(DoublyLinkedList):
         def element(self):
             return self.node.data
 
+        def __eq__(self, other):
+            return type(other) is type(self) and self.node is other.node
+
+        def __ne__(self, other):
+            return not(self == other)
+
     def check_position(self, p):
         """
         Positions won't necessarily refer to this particular container so must be validated
@@ -120,19 +128,30 @@ class PositionalList(DoublyLinkedList):
             raise ValueError
         if not isinstance(p, self.Position):
             raise TypeError
+        if p.node.next is None:
+            raise ValueError
         return p.node
 
     def position(self, node):
+        if node is self.trailer or node is self.header:
+            return None
         return self.Position(node, self)
 
-    def insert_between(self, begin, end, data):
-        begin_node = self.check_position(begin)
-        end_node = self.check_position(end)
+    def insert_before(self, p, data):
+        end_node = self.check_position(p)
+        begin_node = end_node.prev
+        node = super().insert(begin_node, end_node, data)
+        return self.position(node)
+
+    def insert_after(self, p, data):
+        begin_node = self.check_position(p)
+        end_node = begin_node.next
         node = super().insert(begin_node, end_node, data)
         return self.position(node)
 
     def add_first(self, data):
-        self.insert(self.header, self.header.next, data)
+        node = self.insert(self.header, self.header.next, data)
+        return self.position(node)
 
     def add_last(self, data):
         self.insert(self.trailer.prev, self.trailer, data)
@@ -145,12 +164,28 @@ class PositionalList(DoublyLinkedList):
         node = self.check_position(p)
         return self.position(node.next)
 
+    def replace(self, p, data):
+        node = self.check_position(p)
+        node.data = data
+        return self.position(node)
+
+    def delete(self, p):
+        node = self.check_position(p)
+        next_node = node.next
+        prev_node = node.prev
+        return super().remove(prev_node, next_node)
+
     def first(self):
         return self.position(self.header.next)
 
     def last(self):
         return self.position(self.trailer.prev)
 
+    def __iter__(self):
+        current = self.first()
+        while current is not None:
+            yield current.element()
+            current = self.after(current)
 
 
 class PositionalTest(unittest.TestCase):
@@ -168,6 +203,31 @@ class PositionalTest(unittest.TestCase):
             p = position_list.after(p)
             self.assertEqual(p.element(), i)
 
+    def test_iter(self):
+        position_list = PositionalList()
+        for i in range(5):
+            position_list.add_last(i)
+
+        for idx, item in enumerate(position_list):
+            self.assertEqual(item, idx)
+
+    def test_delete(self):
+        position_list = PositionalList()
+        for i in range(5):
+            position_list.add_last(i)
+        p = position_list.first()
+        p = position_list.after(p)
+        self.assertEqual(position_list.delete(p), 1)
+        p = position_list.last()
+        p = position_list.before(p)
+        self.assertEqual(position_list.delete(p), 3)
+        for idx, item in enumerate(position_list):  # should be 0, 2, 4
+            self.assertEqual(item, 2 * idx)
+        for i in range(3):
+            p = position_list.first()
+            position_list.delete(p)
+        with self.assertRaises(ValueError):  # Expired position
+            position_list.delete(p)
 
 
 if __name__ == "__main__":
