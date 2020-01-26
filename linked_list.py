@@ -45,12 +45,12 @@ class LinkedListBase:
     def first(self):
         if self.is_empty() and self.head is None:
             raise IndexError
-        return self.head.data
+        return self.head
 
     def last(self):
         if self.is_empty() and self.tail is None:
             raise IndexError
-        return self.tail.data
+        return self.tail
 
     def is_empty(self):
         return self.len == 0
@@ -87,7 +87,7 @@ class LinkedStack(LinkedListBase):
         return super().remove_first()
 
     def top(self):
-        return super().first()
+        return super().first().data
 
 
 class LinkedStackTest(unittest.TestCase):
@@ -116,6 +116,9 @@ class LinkedQueue(LinkedListBase):
     def dequeue(self):
         return super().remove_first()
 
+    def first(self):
+        return super().first().data
+
 
 class LinkedQueueTest(unittest.TestCase):
     def test_queue(self):
@@ -131,6 +134,40 @@ class LinkedQueueTest(unittest.TestCase):
         with self.assertRaises(IndexError):
             queue.dequeue()
         self.assertEqual(queue.is_empty(), True)
+
+
+class CircularListBase(LinkedListBase):
+    def __init__(self):
+        super().__init__()
+
+    def add_first(self, data):
+        super().add_first(data)
+        self.tail.next = self.first()
+
+    def add_last(self, data):
+        super().add_last(data)
+        self.tail.next = self.first()
+
+
+class CircularListTest(unittest.TestCase):
+    def test_circular(self):
+        """
+        Testing adding and removing to the list
+        :return:
+        """
+        linked = CircularListBase()  # create empty list
+        linked.add_last("1")
+        linked.add_last("2")
+        linked.add_last("3")
+        item = linked.first()
+        for i in range(len(linked) + 1):
+            print(item.data)
+            item = item.next
+        self.assertEqual(linked.remove_first(), "1")
+        self.assertEqual(linked.remove_first(), "2")
+        self.assertEqual(linked.remove_first(), "3")
+        with self.assertRaises(IndexError):
+            linked.remove_first()
 
 
 if __name__ == "__main__":
