@@ -78,6 +78,8 @@ class LinkedStack(LinkedListBase):
         return super().remove_first()
 
     def top(self):
+        if self.is_empty() and self.first is None:
+            raise IndexError
         return self.first.data
 
     def __len__(self):
@@ -85,7 +87,7 @@ class LinkedStack(LinkedListBase):
 
 
 class LinkedStackTest(unittest.TestCase):
-    def test_init(self):
+    def test_stack(self):
         stack = LinkedStack()
         stack.push("1")
         stack.push("2")
@@ -98,6 +100,25 @@ class LinkedStackTest(unittest.TestCase):
         with self.assertRaises(IndexError):
             stack.pop()
         self.assertEqual(stack.is_empty(), True)
+
+
+class LinkedQueueTest(unittest.TestCase):
+    def test_queue(self):
+        queue = LinkedQueue()
+        queue.enqueue("1")
+        queue.enqueue("2")
+        queue.enqueue("3")
+        self.assertEqual(queue.first(), "1")
+        self.assertEqual(len(queue), 3)
+        self.assertEqual(queue.dequeue(), "3")
+        self.assertEqual(queue.dequeue(), "2")
+        queue.dequeue()
+        with self.assertRaises(IndexError):
+            queue.dequeue()
+        self.assertEqual(queue.is_empty(), True)
+
+
+
 
 
 if __name__ == "__main__":
