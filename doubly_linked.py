@@ -15,47 +15,34 @@ class DoublyLinkedList(LinkedListBase):
     class Node(LinkedListBase.Node):
         def __init__(self):
             super().__init__()
+            self.next = None
             self.prev = None
 
-    def add_first(self, data):
+    def insert(self, begin, end, data):
+        if begin.next != end or end.prev != begin:
+            raise IndexError
         new_node = self.Node()
         new_node.data = data
-        old_node = self.header.next
-        new_node.next = old_node
-        new_node.prev = self.header
-        old_node.prev = new_node
-        self.header.next = new_node
+        new_node.next = end
+        new_node.prev = begin
+        begin.next = new_node
+        end.prev = new_node
         self.len += 1
+        return new_node
 
-    def add_last(self, data):
-        new_node = self.Node()
-        new_node.data = data
-        old_node = self.trailer.prev
-        new_node.prev = old_node
-        new_node.next = self.trailer
-        old_node.next = new_node
-        self.trailer.prev = new_node
-        self.len += 1
+    def remove(self, begin, end):
+        remove_node = begin.next
+        if remove_node.next != end:
+            raise IndexError
+        begin.next = end
+        end.prev = begin
+        self.len -= 1
+        return remove_node
 
-    def remove_last(self):
+    def first(self):
         if self.is_empty():
             raise IndexError
-        old_last = self.trailer.prev
-        new_last = old_last.prev
-        self.trailer.prev = new_last
-        new_last.next = self.trailer
-        self.len -= 1
-        return old_last
-
-    def remove_first(self):
-        if self.is_empty():
-            raise IndexError
-        old_first = self.header.next
-        new_first = old_first.next
-        self.header.next = new_first
-        new_first.prev = self.header
-        self.len -= 1
-        return old_first
+        return self.header.next
 
     def last(self):
         if self.is_empty():
