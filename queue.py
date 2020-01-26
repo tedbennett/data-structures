@@ -77,7 +77,7 @@ class CircularQueue(QueueBase):
 class CircularQueueTest(unittest.TestCase):
     def test_init(self):
         """
-        Tests queue initialises correctly, and checks first() raises and exception correctly
+        Tests queue initialises correctly, and checks head() raises and exception correctly
         :return:
         """
         queue = CircularQueue(20)
@@ -88,7 +88,7 @@ class CircularQueueTest(unittest.TestCase):
 
     def test_enqueue(self):
         queue = CircularQueue(20)
-        queue.enqueue("first")
+        queue.enqueue("head")
         for i in range(19):
             queue.enqueue(i)
         with self.assertRaises(Exception):

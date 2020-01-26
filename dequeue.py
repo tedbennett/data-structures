@@ -51,7 +51,7 @@ class Deque(CircularQueue):
 class DequeTest(unittest.TestCase):
     def test_init(self):
         """
-        Tests deque initialises correctly, and checks first() raises and exception correctly
+        Tests deque initialises correctly, and checks head() raises and exception correctly
         :return:
         """
         queue = Deque(20)
