@@ -99,5 +99,22 @@ class DoublyLinkedTest(unittest.TestCase):
             double_list.remove(double_list.header, double_list.trailer)
 
 
+class PositionalTest(unittest.TestCase):
+    def test_access(self):
+        """
+        Positional list introduces a wrapper class for nodes, the Position
+        :return:
+        """
+        position_list = PositionalList()
+        for i in range(5):
+            position_list.add_last(i)
+        p = position_list.first()
+        self.assertEqual(p.element().data, 0)
+        for i in range(1, 5):
+            p = position_list.after(p)
+            self.assertEqual(p.element().data, i)
+
+
+
 if __name__ == "__main__":
     unittest.main()
