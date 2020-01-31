@@ -5,6 +5,7 @@ class TreeBase:
     """
     Abstract base class
     """
+
     class Position:
         def element(self):
             raise NotImplementedError
@@ -44,3 +45,21 @@ class TreeBase:
 
     def __iter__(self):
         raise NotImplementedError
+
+
+class BinaryTreeBase(TreeBase):
+    def __init__(self):
+        super().__init__()
+
+    def left(self, p):
+        raise NotImplementedError
+
+    def right(self, p):
+        raise NotImplementedError
+
+    def sibling(self, p):
+        parent = self.parent(p)
+        if self.left(parent) == p:
+            return self.left(parent)
+        else:
+            return self.right(parent)
