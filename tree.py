@@ -40,12 +40,6 @@ class TreeBase:
     def is_empty(self):
         return len(self) == 0
 
-    def positions(self):
-        raise NotImplementedError
-
-    def __iter__(self):
-        raise NotImplementedError
-
 
 class BinaryTreeBase(TreeBase):
     def __init__(self):
@@ -128,6 +122,18 @@ class BinaryTree(BinaryTreeBase):
         self.size += 1
         return self.position(node)
 
+    def parent(self, p):
+        node = self.check_position(p)
+        return self.position(node.parent)
+
+    def left(self, p):
+        node = self.check_position(p)
+        return self.position(node.left)
+
+    def right(self, p):
+        node = self.check_position(p)
+        return self.position(node.right)
+
     def add_left(self, p, data):
         node = self._Node(data)
         parent = self.check_position(p)
@@ -144,14 +150,6 @@ class BinaryTree(BinaryTreeBase):
         self.size += 1
         return self.position(node)
 
-    def left(self, p):
-        node = self.check_position(p)
-        return self.position(node.left)
-
-    def right(self, p):
-        node = self.check_position(p)
-        return self.position(node.right)
-
     def num_children(self, p):
         num = 0
         if self.right(p):
@@ -160,9 +158,27 @@ class BinaryTree(BinaryTreeBase):
             num += 1
         return num
 
-    def parent(self, p):
+    def delete(self, p):
+        if self.num_children(p) > 1:
+            raise ValueError("Position has 2 children")
         node = self.check_position(p)
-        return self.position(node.parent)
+        parent = node.parent
+        if node.right:
+            child = node.right
+        else:
+            child = node.left
+        if child:
+            child.parent = parent
+        if not node.parent:  # node is root
+            self._root = child
+        else:
+            if parent.left is node:
+                parent.left = child
+            else:
+                parent.right = child
+        node.parent = node
+        self.size -= 1
+        return node.data
 
     def __len__(self):
         return self.size
@@ -204,6 +220,27 @@ class BinaryTreeTest(unittest.TestCase):
         children = [i for i in tree.children(left)]
         self.assertEqual(children, [child_left, child_right])
         self.assertEqual(tree.sibling(child_left), child_right)
+
+    def test_delete(self):
+        tree = BinaryTree()
+        root = tree.add_root("root")
+        left = tree.add_left(root, "left")
+        child_left = tree.add_left(left, "left-left")
+        child_right = tree.add_right(left, "left-right")
+        with self.assertRaises(ValueError):
+            tree.delete(left)
+        self.assertEqual(tree.delete(child_left), "left-left")
+        self.assertEqual(len(tree), 3)
+        self.assertEqual(tree.delete(left), "left")
+        left = tree.left(tree.root())
+        self.assertEqual(tree.delete(root), "root")
+        root = tree.root()
+        self.assertEqual(tree.delete(root), "left-right")
+
+        self.assertEqual(tree.is_empty(), True)
+        self.assertEqual(len(tree), 0)
+
+
 
 
 if __name__ == "__main__":
