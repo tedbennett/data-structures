@@ -100,6 +100,19 @@ class BinaryTree(BinaryTreeBase):
         def __ne__(self, other):
             return not(self == other)
 
+    def check_position(self, p):
+        """
+        Positions won't necessarily refer to this particular container so must be validated
+        :return:
+        """
+        if p.container is not self:
+            raise ValueError("Position does not belong to this tree")
+        if not isinstance(p, self.Position):
+            raise TypeError("Must be Position type")
+        if p.node.parent is p.node:  # when a node is deleted, its child takes its place
+            raise ValueError("Deleted node")
+        return p.node
+
     def root(self):
         return self.Position(self._root, self)
 
@@ -109,17 +122,21 @@ class BinaryTree(BinaryTreeBase):
 
     def add_left(self, p, data):
         node = self._Node(data)
-        p.node.left = node
+        parent = self.check_position(p)
+        parent.left = node
 
     def add_right(self, p, data):
         node = self._Node(data)
-        p.node.right = node
+        parent = self.check_position(p)
+        parent.right = node
 
     def left(self, p):
-        return self.Position(p.node.left, self)
+        node = self.check_position(p)
+        return self.Position(node.left, self)
 
     def right(self, p):
-        return self.Position(p.node.right, self)
+        node = self.check_position(p)
+        return self.Position(node.right, self)
 
 
 class BinaryTreeTest(unittest.TestCase):
