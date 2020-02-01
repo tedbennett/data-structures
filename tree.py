@@ -240,6 +240,26 @@ class BinaryTreeTest(unittest.TestCase):
         self.assertEqual(tree.is_empty(), True)
         self.assertEqual(len(tree), 0)
 
+    def test_attach(self):
+        tree1 = BinaryTree()
+        root1 = tree1.add_root("root1")
+        tree1.add_left(root1, "left1")
+
+        tree2 = BinaryTree()
+        root2 = tree2.add_root("root2")
+        tree2.add_left(root2, "left2")
+        tree2.add_right(root2, "right2")
+
+        tree = BinaryTree()
+        root = tree.add_root("root")
+        self.assertEqual(len(tree), 6)
+
+        tree.attach(root, tree1, tree2)
+        children = [i for i in tree.children(root)]
+        self.assertEqual(children, [root1, root2])
+
+
+
 
 
 
