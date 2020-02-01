@@ -59,7 +59,28 @@ class BinaryTreeBase(TreeBase):
 
     def sibling(self, p):
         parent = self.parent(p)
+        if parent is None:
+            return None
         if self.left(parent) == p:
-            return self.left(parent)
-        else:
             return self.right(parent)
+        else:
+            return self.left(parent)
+
+    def children(self, p):
+        # iterator
+        if self.left(p) is not None:
+            yield self.left(p)
+        if self.right(p) is not None:
+            yield self.right(p)
+
+
+class BinaryTreeTest(unittest.TestCase):
+    def test_init(self):
+        tree = BinaryTree()
+        tree.add_root("root")
+        root = tree.root()
+        self.assertEqual(root.element(), "root")
+        tree.add_left(root, "left")
+        tree.add_right(root, "right")
+        self.assertEqual(tree.left(root), "left")
+        self.assertEqual(tree.right(root), "right")
