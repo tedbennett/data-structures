@@ -152,9 +152,6 @@ class BinaryTree(BinaryTreeBase):
         node = self.check_position(p)
         return self.position(node.right)
 
-    def children(self, p):
-        return self.left(p), self.right(p)
-
     def num_children(self, p):
         num = 0
         if self.right(p):
@@ -166,14 +163,6 @@ class BinaryTree(BinaryTreeBase):
     def parent(self, p):
         node = self.check_position(p)
         return self.position(node.parent)
-
-    def sibling(self, p):
-        parent = self.parent(p)
-        if self.check_position(parent):
-            if self.left(parent) == p:
-                return self.right(parent)
-            return self.left(parent)
-        return None
 
     def __len__(self):
         return self.size
@@ -212,7 +201,8 @@ class BinaryTreeTest(unittest.TestCase):
         self.assertEqual(tree.num_children(left), 2)
         self.assertEqual(tree.is_leaf(left), False)
         self.assertEqual(tree.is_leaf(child_left), True)
-        self.assertEqual(tree.children(left), (child_left, child_right))
+        children = [i for i in tree.children(left)]
+        self.assertEqual(children, [child_left, child_right])
         self.assertEqual(tree.sibling(child_left), child_right)
 
 
