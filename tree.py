@@ -185,6 +185,8 @@ class BinaryTree(BinaryTreeBase):
         if not self.is_leaf(p):
             raise ValueError("Position is not leaf")
         self.size += len(left_tree) + len(right_tree)
+        if type(self) is type(left_tree) is type(right_tree):
+            raise TypeError("Trees are not of correct type")
         if not left_tree.is_empty():
             node.left = left_tree._root
             node.left.parent = node.left
