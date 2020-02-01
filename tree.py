@@ -74,6 +74,54 @@ class BinaryTreeBase(TreeBase):
             yield self.right(p)
 
 
+class BinaryTree(BinaryTreeBase):
+    def __init__(self):
+        super().__init__()
+        self._root = None
+
+    class _Node:
+        def __init__(self, data, left=None, right=None, parent=None):
+            self.data = data
+            self.left = left
+            self.right = right
+            self.parent = parent
+
+    class Position:
+        def __init__(self, node, container):
+            self.node = node
+            self.container = container
+
+        def element(self):
+            return self.node.data
+
+        def __eq__(self, other):
+            return type(other) is type(self) and self.node is other.node
+
+        def __ne__(self, other):
+            return not(self == other)
+
+    def root(self):
+        return self.Position(self._root, self)
+
+    def add_root(self, data):
+        node = self._Node(data)
+        self._root = node
+
+    def add_left(self, p, data):
+        node = self._Node(data)
+        p.node.left = node
+
+    def add_right(self, p, data):
+        node = self._Node(data)
+        p.node.right = node
+
+    def left(self, p):
+        return self.Position(p.node.left, self)
+
+    def right(self, p):
+        return self.Position(p.node.right, self)
+
+
 class BinaryTreeTest(unittest.TestCase):
     def test_init(self):
         tree = BinaryTree()
@@ -82,5 +130,9 @@ class BinaryTreeTest(unittest.TestCase):
         self.assertEqual(root.element(), "root")
         tree.add_left(root, "left")
         tree.add_right(root, "right")
-        self.assertEqual(tree.left(root), "left")
-        self.assertEqual(tree.right(root), "right")
+        self.assertEqual(tree.left(root).element(), "left")
+        self.assertEqual(tree.right(root).element(), "right")
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,4 +1,4 @@
-from queue import CircularQueue
+from simple_queue import CircularQueue
 import unittest
 
 
